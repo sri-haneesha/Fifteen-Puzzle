@@ -6,22 +6,15 @@ window.addEventListener('DOMContentLoaded', (event) => {
     function isMovable(tile) {
         const x = parseInt(tile.style.left, 10) / 100;
         const y = parseInt(tile.style.top, 10) / 100;
-        console.log(`Checking if tile ${tile.textContent} at (${x}, ${y}) is movable`);
         return (x === emptySpace.x && Math.abs(y - emptySpace.y) === 1) ||
                (y === emptySpace.y && Math.abs(x - emptySpace.x) === 1);
     }
 
     function updateMovableTiles() {
-		console.log("Updating movable tiles");
-
         tiles.forEach(tile => {
             if (isMovable(tile)) {
-				console.log(`Tile ${tile.textContent} is movable`);
-
                 tile.classList.add('movablepiece');
             } else {
-				console.log(`Tile ${tile.textContent} is not movable`);
-
                 tile.classList.remove('movablepiece');
             }
         });
@@ -32,33 +25,53 @@ window.addEventListener('DOMContentLoaded', (event) => {
         const y = parseInt(tile.style.top, 10) / 100;
 
         if (isMovable(tile)) {
-            console.log(`Moving tile ${tile.textContent} from (${x}, ${y}) to empty space at (${emptySpace.x}, ${emptySpace.y})`);
             tile.style.top = `${emptySpace.y * 100}px`;
             tile.style.left = `${emptySpace.x * 100}px`;
             emptySpace.x = x;
             emptySpace.y = y;
             updateMovableTiles();
-        } else {
-            console.log(`Tile ${tile.textContent} at (${x}, ${y}) is not movable`);
+
+            // Check if the game has been won after this move
+            if (checkWin()) {
+                showWinningNotification();
+            }
         }
     }
 
     function shuffleTiles() {
-        console.log("Shuffling tiles");
         for (let i = 0; i < 300; i++) {
             const movableTiles = tiles.filter(tile => isMovable(tile));
             if (movableTiles.length === 0) {
-                console.log("No movable tiles found, skipping shuffle iteration");
                 continue;
             }
             const randomIndex = Math.floor(Math.random() * movableTiles.length);
             const randomTile = movableTiles[randomIndex];
-            console.log(`Shuffle iteration ${i}: moving tile ${randomTile.textContent}`);
             moveTile(randomTile);
         }
-        console.log("Shuffling complete");
+        updateMovableTiles(); // Update movable tiles after shuffling
+        if (checkWin()) { // If in a rare case the shuffle results in a win, shuffle again
+            shuffleTiles();
+        }
     }
 
+    function checkWin() {
+        for (let i = 0; i < tiles.length; i++) {
+            const tile = tiles[i];
+            const x = parseInt(tile.style.left, 10) / 100;
+            const y = parseInt(tile.style.top, 10) / 100;
+            if (x !== (i % 4) || y !== Math.floor(i / 4)) {
+                return false; // The tile is not in its correct position
+            }
+        }
+        return true; // All tiles are in correct positions
+    }
+
+    function showWinningNotification() {
+        const winningMessage = document.createElement('div');
+        winningMessage.textContent = 'Congratulations! You solved the puzzle!';
+        winningMessage.className = 'winning-message';
+        container.appendChild(winningMessage);
+    }
 
     // Initialize the board
     for (let i = 0; i < 15; i++) {
@@ -70,12 +83,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         tile.style.top = `${Math.floor(i / 4) * 100}px`;
         tile.style.backgroundImage = 'url(background.jpg)';
         tile.style.backgroundPosition = `-${(i % 4) * 100}px -${Math.floor(i / 4) * 100}px`;
-        if (i === 14) {
-			console.log("Attaching event listeners to the last tile");}
-        tile.addEventListener('click', () => {
-			console.log(`Tile ${tile.textContent} clicked`);
-            moveTile(tile);
-        });
+        tile.addEventListener('click', () => moveTile(tile));
         tile.addEventListener('mouseenter', () => {
             if (isMovable(tile)) {
                 tile.classList.add('movablepiece');
@@ -84,28 +92,17 @@ window.addEventListener('DOMContentLoaded', (event) => {
         tile.addEventListener('mouseleave', () => {
             tile.classList.remove('movablepiece');
         });
-		
-		tile.addEventListener('click', () => {
-            console.log(`Tile ${tile.textContent} clicked`);
-        });
-
-    console.log(`Event listener added to tile ${tile.textContent}`);
-
         tiles.push(tile);
         container.appendChild(tile);
     }
 
-    const lastTile = tiles[14]; // Assuming the last tile is at index 14
-    lastTile.addEventListener('click', () => {
-    console.log('Direct event listener: last tile clicked');
-});
     // Add the empty tile for visual completeness (optional)
     const emptyTile = document.createElement('div');
     emptyTile.id = 'tile16';
     emptyTile.classList.add('tile');
     emptyTile.style.left = `${emptySpace.x * 100}px`;
     emptyTile.style.top = `${emptySpace.y * 100}px`;
-	emptyTile.style.pointerEvents = 'none'; 
+    emptyTile.style.pointerEvents = 'none'; 
     container.appendChild(emptyTile);
 
     // Set up the shuffle button
@@ -116,9 +113,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     });
 
     // Initial update of movable tiles
-    updateMovableTiles();
-	
-	
-
-	
+    updateMovableTiles(); 
 });
+

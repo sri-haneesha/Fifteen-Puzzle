@@ -43,6 +43,16 @@ body {
 }
 
 #tile16 {
-    background: none; /* Assuming you don't want any background */
+    background: none; 
     pointer-events: none; /* This ensures that clicks pass through to tiles below */
+}
+
+.winning-message {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    text-align: center;
+    font-size: 24px;
+    color: green;
 }
