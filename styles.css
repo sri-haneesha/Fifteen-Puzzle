@@ -37,7 +37,7 @@ body {
     cursor: pointer; /* Optional: changes the cursor on hover */
 }
 .movablepiece {
-    border-color: red;
+    border-color: black;
     color: #006600; /* Green text */
     text-decoration: underline;
 }
