@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+}
+#header {
+    text-align: center;
+}
+#description, #description2 {
+    text-align: center;
+    margin: 10px 0;
+}
+#puzzle-container {
+    width: 600px;
+    height: 600px;
+    margin: 20px auto;
+    position: relative;
+    border: 1px solid #000;
+}
+.tile {
+    width: 100px; /* Each tile is 100x100 pixels */
+    height: 100px;
+    text-align: center;
+    line-height: 100px; /* Center text vertically */
+    border: 1px solid #000;
+    cursor: pointer;
+    position: absolute;
+    background-size: 600px 600px; /* Adjust for a 6x6 grid */
+    font-size: 24pt; /* Adjust font size if needed */
+    color: black;
+}
+#shuffle-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.movablepiece {
+    border-color: red;
+    color: #006600; /* Green text for movable pieces */
+    text-decoration: underline;
+}
+.winning-message {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    text-align: center;
+    font-size: 24px;
+    color: green;
+    transform: translateY(-50%);
+}
+
+#cheat-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
