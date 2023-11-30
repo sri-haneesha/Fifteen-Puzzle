@@ -1,5 +1,20 @@
 body {
     font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #D4EEF2;
+}
+div{
+    text-align: center;
+}
+#darkModeToggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: white;
 }
 #header {
     text-align: center;
@@ -34,6 +49,20 @@ body {
     font-size: 16px;
     cursor: pointer;
 }
+
+#bttn
+{
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#timer{
+    text-align: center;
+}
+
 .movablepiece {
     border-color: red;
     color: #006600; /* Green text for movable pieces */

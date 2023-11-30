@@ -1,9 +1,28 @@
 body {
     font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #D4EEF2;
+}
+
+#darkModeToggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: white;
 }
 #header {
     text-align: center;
 }
+
+
+#timer{
+    text-align: center;
+}
+
 #description2 {
     text-indent: 0; /* Removes indentation from paragraphs */
     margin-left: 0; /* Ensures no extra space on the left side */
@@ -40,6 +59,14 @@ body {
     border-color: black;
     color: #006600; /* Green text */
     text-decoration: underline;
+}
+
+#bttn {
+    display: block;
+    margin: 20px auto; /* Centers the button horizontally */
+    padding: 10px 20px; /* Optional: for better sizing of the button */
+    font-size: 16px; /* Optional: for better readability */
+    cursor: pointer; /* Optional: changes the cursor on hover */
 }
 
 #tile16 {

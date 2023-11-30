@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fifteen Puzzle</title>
+    <link rel="stylesheet" href="./landing.css">
+</head>
+
+<body>
+    <div id="header">
+        <h1>Fifteen Puzzle</h1>
+    </div>
+    <div id="description">
+        <p>The goal of the fifteen puzzle is to un-jumble its fifteen squares by repeatedly making moves that slide
+            squares into the empty space. How quickly can you solve it?</p>
+    </div>
+
+    <br>
+    <br>
+
+    <h3>Pick an Image to get started</h3>
+
+    <div id="image-selection">
+        <div id="2">
+            <a href="./eight.html"><img class="image-option" src="./background2.jpeg"></a>
+            <br>
+            3 X 3
+        </div>
+        <div id="4">
+            <a href="./fifteen.html"><img class="image-option" src="./background.jpg"></a>
+            <br>
+            4 X 4
+        </div>
+        <div id="6">
+            <a href="./thirtyfive.html"><img class="image-option" src="./background1.png"></a>
+            <br>
+            6 X 6
+        </div>
+    </div>
+    <button id="darkModeToggle" onclick="document.body.classList.toggle('dark-mode');">Toggle Dark Mode</button>
+</body>
+
+</html>

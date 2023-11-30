@@ -1,7 +1,46 @@
 window.addEventListener('DOMContentLoaded', (event) => {
+
+    document.getElementById('darkModeToggle').addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+    });
     const container = document.getElementById('puzzle-container');
     const emptySpace = { x: 5, y: 5 };
     let tiles = [];
+
+    const timerModule = (function () {
+        let time = 0;
+        let intervalId = null;
+        let timerElement = null;
+
+        const tick = () => {
+            time++;
+            timerElement.textContent = `Time: ${time} s`;
+        };
+
+        return {
+            start: function () {
+                if (intervalId === null) {
+                    timerElement = document.getElementById('timer'); // Make sure this ID exists in your HTML
+                    intervalId = setInterval(tick, 1000);
+                }
+            },
+            stop: function () {
+                if (intervalId !== null) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+            },
+            reset: function () {
+                time = 0;
+                if (timerElement) {
+                    timerElement.textContent = `Time: 0 s`;
+                }
+            },
+            getTime: function () {
+                return time;
+            }
+        };
+    })();
 
     function isMovable(tile) {
         const x = parseInt(tile.style.left, 10) / 100;
@@ -53,6 +92,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
+    function playSound() {
+        const audio = new Audio('music.mp3');
+        audio.play();
+    }
+    function stopSound() {
+        const audio = new Audio('music.mp3');
+        audio.stop();
+    }
+
+    const btn = document.getElementById('bttn');
+    btn.addEventListener('click', () => {
+        stopSound();
+    });
+
     function checkWin() {
         for (let i = 0; i < tiles.length; i++) {
             const tile = tiles[i];
@@ -62,6 +115,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 return false;
             }
         }
+        timerModule.stop();
+        alert("Puzzle Solved!");
+        playSound();
         return true;
     }
 
@@ -98,27 +154,30 @@ window.addEventListener('DOMContentLoaded', (event) => {
     shuffleButton.addEventListener('click', () => {
         shuffleTiles();
         updateMovableTiles();
+        timerModule.reset(); // Reset the timer to 0
+        timerModule.start(); // Start the timer
+        stopSound();
     });
 
-    function solvePuzzle() {
-        let counter = 1;
-        for (let y = 0; y < 6; y++) { 
-            for (let x = 0; x < 6; x++) {
-                if (y === 5 && x === 5) { 
-                    break;
-                }
-                const tile = document.getElementById('tile' + counter);
-                tile.style.left = `${x * 100}px`;
-                tile.style.top = `${y * 100}px`;
-                counter++;
-            }
-        }
-        emptySpace.x = 5; 
-        emptySpace.y = 5;
-    }
+    // function solvePuzzle() {
+    //     let counter = 1;
+    //     for (let y = 0; y < 6; y++) { 
+    //         for (let x = 0; x < 6; x++) {
+    //             if (y === 5 && x === 5) { 
+    //                 break;
+    //             }
+    //             const tile = document.getElementById('tile' + counter);
+    //             tile.style.left = `${x * 100}px`;
+    //             tile.style.top = `${y * 100}px`;
+    //             counter++;
+    //         }
+    //     }
+    //     emptySpace.x = 5; 
+    //     emptySpace.y = 5;
+    // }
     
-    const cheatButton = document.getElementById('cheat-button');
-    cheatButton.addEventListener('click', solvePuzzle);
+    // const cheatButton = document.getElementById('cheat-button');
+    // cheatButton.addEventListener('click', solvePuzzle);
 
     updateMovableTiles(); 
 });

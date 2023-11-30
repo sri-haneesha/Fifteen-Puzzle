@@ -1,14 +1,56 @@
 window.addEventListener('DOMContentLoaded', (event) => {
+
+    document.getElementById('darkModeToggle').addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+    });
+
     const container = document.getElementById('puzzle-container');
     const emptySpace = { x: 3, y: 3 }; // Bottom right corner as the empty space
     let tiles = [];
+
+    const timerModule = (function () {
+        let time = 0;
+        let intervalId = null;
+        let timerElement = null;
+
+        const tick = () => {
+            time++;
+            timerElement.textContent = `Time: ${time} s`;
+        };
+
+        return {
+            start: function () {
+                if (intervalId === null) {
+                    timerElement = document.getElementById('timer'); // Make sure this ID exists in your HTML
+                    intervalId = setInterval(tick, 1000);
+                }
+            },
+            stop: function () {
+                if (intervalId !== null) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+            },
+            reset: function () {
+                time = 0;
+                if (timerElement) {
+                    timerElement.textContent = `Time: 0 s`;
+                }
+            },
+            getTime: function () {
+                return time;
+            }
+        };
+    })();
+
 
     function isMovable(tile) {
         const x = parseInt(tile.style.left, 10) / 100;
         const y = parseInt(tile.style.top, 10) / 100;
         return (x === emptySpace.x && Math.abs(y - emptySpace.y) === 1) ||
-               (y === emptySpace.y && Math.abs(x - emptySpace.x) === 1);
+            (y === emptySpace.y && Math.abs(x - emptySpace.x) === 1);
     }
+
 
     function updateMovableTiles() {
         tiles.forEach(tile => {
@@ -54,15 +96,32 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
+    function playSound() {
+        const audio = new Audio('music.mp3');
+        audio.play();
+    }
+    function stopSound() {
+        const audio = new Audio('music.mp3');
+        audio.stop();
+    }
+
+    const btn = document.getElementById('bttn');
+    btn.addEventListener('click', () => {
+        stopSound();
+    });
+
     function checkWin() {
         for (let i = 0; i < tiles.length; i++) {
             const tile = tiles[i];
             const x = parseInt(tile.style.left, 10) / 100;
             const y = parseInt(tile.style.top, 10) / 100;
-            if (x !== (i % 4) || y !== Math.floor(i / 4)) {
+            if (x !== (i % 2) || y !== Math.floor(i / 2)) {
                 return false; // The tile is not in its correct position
             }
         }
+        timerModule.stop();
+        alert("Puzzle Solved!");
+        playSound();
         return true; // All tiles are in correct positions
     }
 
@@ -96,23 +155,28 @@ window.addEventListener('DOMContentLoaded', (event) => {
         container.appendChild(tile);
     }
 
-    // Add the empty tile for visual completeness (optional)
-    const emptyTile = document.createElement('div');
-    emptyTile.id = 'tile16';
-    emptyTile.classList.add('tile');
-    emptyTile.style.left = `${emptySpace.x * 100}px`;
-    emptyTile.style.top = `${emptySpace.y * 100}px`;
-    emptyTile.style.pointerEvents = 'none'; 
-    container.appendChild(emptyTile);
-
-    // Set up the shuffle button
+    //shuffle button
     const shuffleButton = document.getElementById('shuffle-button');
     shuffleButton.addEventListener('click', () => {
         shuffleTiles();
         updateMovableTiles(); // Update movable tiles after shuffling
+        timerModule.reset(); // Reset the timer to 0
+        timerModule.start(); // Start the timer
+        stopSound();
     });
 
+
+    // const emptyTile = document.createElement('div');
+    // emptyTile.id = 'tile16';
+    // emptyTile.classList.add('tile');
+    // emptyTile.style.left = `${emptySpace.x * 100}px`;
+    // emptyTile.style.top = `${emptySpace.y * 100}px`;
+    // emptyTile.style.pointerEvents = 'none';
+    // container.appendChild(emptyTile);
+
+
+
     // Initial update of movable tiles
-    updateMovableTiles(); 
+    updateMovableTiles();
 });
 

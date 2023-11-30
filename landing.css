@@ -1,0 +1,31 @@
+body {
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #D4EEF2;
+  text-align: center;
+}
+
+#darkModeToggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+
+#image-selection {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+  }
+  
+  .image-option {
+    width: 300px; /* Adjust size as needed */
+    height: 300px; /* Adjust size as needed */
+    background-size: cover;
+    cursor: pointer;
+    border: 2px solid black; /* Optional border */
+  }

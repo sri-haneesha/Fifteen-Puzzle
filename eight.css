@@ -1,12 +1,32 @@
 body {
     font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #D4EEF2;
 }
+
+div{
+    text-align: center;
+}
+#darkModeToggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
 #header {
     text-align: center;
 }
 #description, #description2 {
     text-align: center;
     margin: 10px 0;
+}
+#timer{
+    text-align: center;
 }
 #puzzle-container {
     width: 300px;
@@ -28,6 +48,15 @@ body {
     color: black;
 }
 #shuffle-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#bttn
+{
     display: block;
     margin: 10px auto;
     padding: 10px 20px;
