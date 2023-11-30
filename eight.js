@@ -5,8 +5,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
     });
 
     const container = document.getElementById('puzzle-container');
-    const emptySpace = { x: 2, y: 2 };
+    const emptySpace = { x: 2, y: 2 }; // Bottom right corner as the empty space //PARAM
     let tiles = [];
+    let audio = new Audio('music.mp3'); // Globally declared audio object
 
     const timerModule = (function () {
         let time = 0;
@@ -21,7 +22,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         return {
             start: function () {
                 if (intervalId === null) {
-                    timerElement = document.getElementById('timer'); // Make sure this ID exists in your HTML
+                    timerElement = document.getElementById('timer');
                     intervalId = setInterval(tick, 1000);
                 }
             },
@@ -60,6 +61,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+    let hasShuffled = false;
+
     function moveTile(tile) {
         const x = parseInt(tile.style.left, 10) / 100;
         const y = parseInt(tile.style.top, 10) / 100;
@@ -71,8 +74,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
             emptySpace.y = y;
             updateMovableTiles();
 
-            if (checkWin()) {
+            if (hasShuffled && checkWin()) {
                 showWinningNotification();
+                playSound();
+                timerModule.stop();
+                hasShuffled = false;
             }
         }
     }
@@ -94,12 +100,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function playSound() {
-        const audio = new Audio('music.mp3');
         audio.play();
     }
+
     function stopSound() {
-        const audio = new Audio('music.mp3');
-        audio.stop();
+        audio.pause();
+        audio.currentTime = 0;
     }
 
     const btn = document.getElementById('bttn');
@@ -116,28 +122,62 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 return false;
             }
         }
-        timerModule.stop();
-        alert("Puzzle Solved!");
-        playSound();
         return true;
     }
 
-    function showWinningNotification() {
-        const winningMessage = document.createElement('div');
-        winningMessage.textContent = 'Congratulations! You solved the puzzle!';
-        winningMessage.className = 'winning-message';
-        container.appendChild(winningMessage);
-    }
+function showWinningNotification() {
+    // Hide all elements in the body except the home button
+    Array.from(document.body.children).forEach(child => {
+        if (child.id !== 'bttn') {
+            child.style.display = 'none';
+        }
+    });
 
-    for (let i = 0; i < 8; i++) {
+    // Set the background image of the entire page to bg3.png
+    document.documentElement.style.height = '100%';
+    document.body.style.height = '100vh';
+    document.body.style.margin = '0';
+    document.body.style.backgroundImage = 'url(bg3.png)';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+
+    // Position the home button at the bottom of the page
+    const homeButton = document.getElementById('bttn');
+    homeButton.style.position = 'absolute';
+    homeButton.style.bottom = '20px';
+    homeButton.style.left = '50%';
+    homeButton.style.transform = 'translateX(-50%)';
+    homeButton.style.zIndex = 1000; // Ensure it's above the background
+
+    // Create and display the winning message
+    const winningMessage = document.createElement('div');
+    winningMessage.textContent = 'Congratulations! You solved the puzzle!';
+    winningMessage.className = 'winning-message';
+    winningMessage.style.position = 'absolute';
+    winningMessage.style.top = '50%';
+    winningMessage.style.left = '50%';
+    winningMessage.style.transform = 'translate(-50%, -50%)';
+    winningMessage.style.fontSize = '2em';
+    winningMessage.style.color = 'black';
+    winningMessage.style.textAlign = 'center';
+    winningMessage.style.zIndex = 1000; // Ensure it's above the background
+    document.body.appendChild(winningMessage);
+}
+
+
+
+
+
+    for (let i = 0; i < 8; i++) { //PARAM
         const tile = document.createElement('div');
         tile.id = 'tile' + (i + 1);
         tile.classList.add('tile');
         tile.textContent = (i + 1).toString();
-        tile.style.left = `${(i % 3) * 100}px`;
-        tile.style.top = `${Math.floor(i / 3) * 100}px`;
-        tile.style.backgroundImage = 'url(background2.jpeg)';
-        tile.style.backgroundPosition = `-${(i % 3) * 100}px -${Math.floor(i / 3) * 100}px`;
+        tile.style.left = `${(i % 3) * 100}px`; //PARAM
+        tile.style.top = `${Math.floor(i / 3) * 100}px`; //PARAM
+        tile.style.backgroundImage = 'url(background2.jpeg)'; //PARAM
+        tile.style.backgroundPosition = `-${(i % 3) * 100}px -${Math.floor(i / 3) * 100}px`; //PARAM
         tile.addEventListener('click', () => moveTile(tile));
         tile.addEventListener('mouseenter', () => {
             if (isMovable(tile)) {
@@ -154,32 +194,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const shuffleButton = document.getElementById('shuffle-button');
     shuffleButton.addEventListener('click', () => {
         shuffleTiles();
-        updateMovableTiles(); // Update movable tiles after shuffling
-        timerModule.reset(); // Reset the timer to 0
-        timerModule.start(); // Start the timer
+        updateMovableTiles();
+        timerModule.reset();
+        timerModule.start();
         stopSound();
+        hasShuffled = true;
     });
 
-    
-
-    // function logicalSolvePuzzle() {
-    //     let interval = setInterval(() => {
-    //         const movableTiles = tiles.filter(tile => isMovable(tile));
-    //         if (movableTiles.length > 0) {
-    //             const randomTile = movableTiles[Math.floor(Math.random() * movableTiles.length)];
-    //             moveTile(randomTile);
-    //         }
-    
-    //         if (checkWin()) {
-    //             clearInterval(interval);
-    //             alert("Puzzle Solved!");
-    //         }
-    //     }, 100); // Adjust the interval as needed
-    // }
-    
-    // // Modify the event listener for the solve button
-    // const cheatButton = document.getElementById('cheat-button');
-    // cheatButton.addEventListener('click', logicalSolvePuzzle);
-
-    updateMovableTiles(); 
+    updateMovableTiles();
 });

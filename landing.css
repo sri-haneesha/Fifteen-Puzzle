@@ -21,7 +21,10 @@ body.dark-mode {
     justify-content: space-around;
     margin: 20px;
   }
-  
+ #description, #description2 {
+    text-align: center;
+    margin: 10px 0;
+} 
   .image-option {
     width: 300px; /* Adjust size as needed */
     height: 300px; /* Adjust size as needed */

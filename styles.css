@@ -23,10 +23,10 @@ body.dark-mode {
     text-align: center;
 }
 
-#description2 {
-    text-indent: 0; /* Removes indentation from paragraphs */
-    margin-left: 0; /* Ensures no extra space on the left side */
-}
+ #description, #description2 {
+    text-align: center;
+    margin: 10px 0;
+} 
 #puzzle-container {
     width: 400px;
     height: 400px;
