@@ -50,6 +50,10 @@ body.dark-mode {
     cursor: pointer;
 }
 
+#moveCounter{
+    text-align: center;
+}
+
 #bttn
 {
     display: block;

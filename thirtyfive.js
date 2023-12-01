@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const emptySpace = { x: 5, y: 5 }; // Bottom right corner as the empty space //PARAM
     let tiles = [];
     let audio = new Audio('music.mp3'); // Globally declared audio object
+    let moveCount = 0;
 
     const timerModule = (function () {
         let time = 0;
@@ -48,7 +49,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         const x = parseInt(tile.style.left, 10) / 100;
         const y = parseInt(tile.style.top, 10) / 100;
         return (x === emptySpace.x && Math.abs(y - emptySpace.y) === 1) ||
-               (y === emptySpace.y && Math.abs(x - emptySpace.x) === 1);
+            (y === emptySpace.y && Math.abs(x - emptySpace.x) === 1);
     }
 
     function updateMovableTiles() {
@@ -63,7 +64,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     let hasShuffled = false;
 
-    function moveTile(tile) {
+    function moveTile(tile, isShuffling = false) {
         const x = parseInt(tile.style.left, 10) / 100;
         const y = parseInt(tile.style.top, 10) / 100;
 
@@ -74,7 +75,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
             emptySpace.y = y;
             updateMovableTiles();
 
-            if (hasShuffled && checkWin()) {
+            if (!isShuffling) {
+                moveCount++; // Increment move count only if not shuffling
+                document.getElementById('moveCounter').textContent = `Moves: ${moveCount}`;
+            }
+
+            if (!isShuffling && hasShuffled && checkWin()) {
                 showWinningNotification();
                 playSound();
                 timerModule.stop();
@@ -91,7 +97,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
             const randomIndex = Math.floor(Math.random() * movableTiles.length);
             const randomTile = movableTiles[randomIndex];
-            moveTile(randomTile);
+            moveTile(randomTile, true);
         }
         updateMovableTiles();
         if (checkWin()) {
@@ -125,45 +131,66 @@ window.addEventListener('DOMContentLoaded', (event) => {
         return true;
     }
 
-function showWinningNotification() {
-    // Hide all elements in the body except the home button
-    Array.from(document.body.children).forEach(child => {
-        if (child.id !== 'bttn') {
-            child.style.display = 'none';
+    function showWinningNotification() {
+        // Hide all elements in the body except the home button
+        Array.from(document.body.children).forEach(child => {
+            if (child.id !== 'bttn') {
+                child.style.display = 'none';
+            }
+        });
+
+        // Set the background image of the entire page to bg3.png
+        document.documentElement.style.height = '100%';
+        document.body.style.height = '100vh';
+        document.body.style.margin = '0';
+        document.body.style.backgroundImage = 'url(bg3.png)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+
+        // Position the home button at the bottom of the page
+        const homeButton = document.getElementById('bttn');
+        homeButton.style.position = 'absolute';
+        homeButton.style.bottom = '20px';
+        homeButton.style.left = '50%';
+        homeButton.style.transform = 'translateX(-50%)';
+        homeButton.style.zIndex = 1000; // Ensure it's above the background
+
+        // Create and display the winning message
+        const winningMessage = document.createElement('div');
+        winningMessage.className = 'winning-message';
+        winningMessage.style.position = 'absolute';
+        winningMessage.style.top = '50%';
+        winningMessage.style.left = '50%';
+        winningMessage.style.transform = 'translate(-50%, -50%)';
+        winningMessage.style.fontSize = '2em';
+        winningMessage.style.color = 'black';
+        winningMessage.style.textAlign = 'center';
+        winningMessage.style.zIndex = 1000; // Ensure it's above the background
+
+        // Calculate best time and moves
+        const bestTime = localStorage.getItem('bestTime');
+        const bestMoves = localStorage.getItem('bestMoves');
+        const currentTime = timerModule.getTime();
+
+        if (bestTime === null || currentTime < bestTime) {
+            localStorage.setItem('bestTime', currentTime);
         }
-    });
 
-    // Set the background image of the entire page to bg3.png
-    document.documentElement.style.height = '100%';
-    document.body.style.height = '100vh';
-    document.body.style.margin = '0';
-    document.body.style.backgroundImage = 'url(bg3.png)';
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
+        if (bestMoves === null || moveCount < bestMoves) {
+            localStorage.setItem('bestMoves', moveCount);
+        }
 
-    // Position the home button at the bottom of the page
-    const homeButton = document.getElementById('bttn');
-    homeButton.style.position = 'absolute';
-    homeButton.style.bottom = '20px';
-    homeButton.style.left = '50%';
-    homeButton.style.transform = 'translateX(-50%)';
-    homeButton.style.zIndex = 1000; // Ensure it's above the background
 
-    // Create and display the winning message
-    const winningMessage = document.createElement('div');
-    winningMessage.textContent = 'Congratulations! You solved the puzzle!';
-    winningMessage.className = 'winning-message';
-    winningMessage.style.position = 'absolute';
-    winningMessage.style.top = '50%';
-    winningMessage.style.left = '50%';
-    winningMessage.style.transform = 'translate(-50%, -50%)';
-    winningMessage.style.fontSize = '2em';
-    winningMessage.style.color = 'black';
-    winningMessage.style.textAlign = 'center';
-    winningMessage.style.zIndex = 1000; // Ensure it's above the background
-    document.body.appendChild(winningMessage);
-}
+        // Update the winning message text with current and best times and moves
+        winningMessage.innerHTML = `Congratulations! You solved the puzzle!<br>` +
+            `Time: ${currentTime} s<br>` +
+            `Moves: ${moveCount}<br>` +
+            `Best Time: ${localStorage.getItem('bestTime')} s<br>` +
+            `Best Moves: ${localStorage.getItem('bestMoves')}`;
+
+        document.body.appendChild(winningMessage);
+    }
 
 
 

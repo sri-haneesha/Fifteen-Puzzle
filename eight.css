@@ -18,6 +18,10 @@ body.dark-mode {
     color: white;
 }
 
+#moveCounter{
+    text-align: center;
+}
+
 #header {
     text-align: center;
 }

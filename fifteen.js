@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const emptySpace = { x: 3, y: 3 }; // Bottom right corner as the empty space //PARAM
     let tiles = [];
     let audio = new Audio('music.mp3'); // Globally declared audio object
+    let moveCount = 0;
 
     const timerModule = (function () {
         let time = 0;
@@ -63,18 +64,23 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     let hasShuffled = false;
 
-    function moveTile(tile) {
+    function moveTile(tile, isShuffling = false) {
         const x = parseInt(tile.style.left, 10) / 100;
         const y = parseInt(tile.style.top, 10) / 100;
-
+    
         if (isMovable(tile)) {
             tile.style.top = `${emptySpace.y * 100}px`;
             tile.style.left = `${emptySpace.x * 100}px`;
             emptySpace.x = x;
             emptySpace.y = y;
             updateMovableTiles();
-
-            if (hasShuffled && checkWin()) {
+    
+            if (!isShuffling) {
+                moveCount++; // Increment move count only if not shuffling
+                document.getElementById('moveCounter').textContent = `Moves: ${moveCount}`;
+            }
+    
+            if (!isShuffling && hasShuffled && checkWin()) {
                 showWinningNotification();
                 playSound();
                 timerModule.stop();
@@ -91,8 +97,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
             const randomIndex = Math.floor(Math.random() * movableTiles.length);
             const randomTile = movableTiles[randomIndex];
-            moveTile(randomTile);
+            moveTile(randomTile, true); 
         }
+        moveCount = 0; // Reset move count after shuffling is complete
+        document.getElementById('moveCounter').textContent = `Moves: ${moveCount}`; // Update move count display
         updateMovableTiles();
         if (checkWin()) {
             shuffleTiles();
@@ -162,6 +170,27 @@ function showWinningNotification() {
     winningMessage.style.color = 'black';
     winningMessage.style.textAlign = 'center';
     winningMessage.style.zIndex = 1000; // Ensure it's above the background
+
+    // Calculate best time and moves
+    const bestTime = localStorage.getItem('bestTime');
+    const bestMoves = localStorage.getItem('bestMoves');
+    const currentTime = timerModule.getTime();
+
+    if (bestTime === null || currentTime < bestTime) {
+        localStorage.setItem('bestTime', currentTime);
+    }
+
+    if (bestMoves === null || moveCount < bestMoves) {
+        localStorage.setItem('bestMoves', moveCount);
+    }
+
+
+    // Update the winning message text with current and best times and moves
+    winningMessage.innerHTML = `Congratulations! You solved the puzzle!<br>` +
+        `Time: ${currentTime} s<br>` +
+        `Moves: ${moveCount}<br>` +
+        `Best Time: ${localStorage.getItem('bestTime')} s<br>` +
+        `Best Moves: ${localStorage.getItem('bestMoves')}`;
     document.body.appendChild(winningMessage);
 }
 

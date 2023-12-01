@@ -4,6 +4,10 @@ body {
     background-color: #D4EEF2;
 }
 
+#moveCounter{
+    text-align: center;
+}
+
 #darkModeToggle {
     position: fixed;
     top: 10px;
