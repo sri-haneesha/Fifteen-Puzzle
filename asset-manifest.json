@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/umar-7w4/CW08WP/static/css/main.37e88104.css",
+    "main.js": "/umar-7w4/CW08WP/static/js/main.501cbdba.js",
+    "static/js/787.c20c0ea2.chunk.js": "/umar-7w4/CW08WP/static/js/787.c20c0ea2.chunk.js",
+    "index.html": "/umar-7w4/CW08WP/index.html",
+    "main.37e88104.css.map": "/umar-7w4/CW08WP/static/css/main.37e88104.css.map",
+    "main.501cbdba.js.map": "/umar-7w4/CW08WP/static/js/main.501cbdba.js.map",
+    "787.c20c0ea2.chunk.js.map": "/umar-7w4/CW08WP/static/js/787.c20c0ea2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.37e88104.css",
+    "static/js/main.501cbdba.js"
+  ]
+}
